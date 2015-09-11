@@ -1,14 +1,11 @@
 'Controls the antfarm class.  Sorry but there isn't a lot of fancy graphics here.
+Imports System.Linq
+
 Public Class FrmFarm
     Inherits System.Windows.Forms.Form
-    Private mAntFarm As AntFarm
-    Private mFarmThread As System.Threading.Thread
 
-    Private mFoodPen As System.Drawing.Pen
-    Private mFoodRec As System.Drawing.Rectangle
-    Private mAntPen As System.Drawing.Pen
-    Private mUberAntPen As System.Drawing.Pen
-    Private mAntRec As System.Drawing.Rectangle
+    Private mAntFarm As AntsNeuralNet.Core.IAntFarm
+    Private mFarmThread As System.Threading.Thread
 
 #Region " Windows Form Designer generated code "
 
@@ -276,38 +273,16 @@ Public Class FrmFarm
 
 
     Private Sub FrmFarm_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
-        mFoodPen = New System.Drawing.Pen(Color.Yellow)
-        mFoodRec = New System.Drawing.Rectangle(1, 1, 5, 5)
-        mAntPen = New System.Drawing.Pen(Color.Red)
-        mUberAntPen = New System.Drawing.Pen(Color.Azure)
-        mAntRec = New System.Drawing.Rectangle(1, 1, 5, 5)
         TimerPaint.Interval = SleepInterval
     End Sub
 
     Private Sub PnlField_Paint(ByVal sender As System.Object, ByVal e As System.Windows.Forms.PaintEventArgs) Handles PnlField.Paint
-        Dim idx As Integer
         If ChkRender.Checked = False Then Return
         If mAntFarm Is Nothing Then Return 'don't want to draw nothing.
         Dim g As System.Drawing.Graphics = PnlField.CreateGraphics()
-        Dim p As PointF
-        For idx = 0 To mAntFarm.Ants.Length - 1
-            p = mAntFarm.Ants(idx).Position
-            mAntRec.X = p.X
-            mAntRec.Y = p.Y
-            If mAntFarm.Ants(idx).Fitness = mAntFarm.BestScore And mAntFarm.BestScore <> 0 Then
-                g.DrawEllipse(mUberAntPen, mAntRec)
-            Else
-                g.DrawEllipse(mAntPen, mAntRec)
-            End If
 
-        Next
-        For idx = 0 To mAntFarm.Food.Length - 1
+        mAntFarm.Draw(New AntPainter(g))
 
-            p = mAntFarm.Food(idx)
-            mFoodRec.X = p.X
-            mFoodRec.Y = p.Y
-            g.DrawRectangle(mFoodPen, mFoodRec)
-        Next
         g.Dispose()
     End Sub
 
@@ -321,8 +296,6 @@ Public Class FrmFarm
         numAnts = Integer.Parse(TxtAnts.Text)
         numFood = Integer.Parse(TxtFood.Text)
         mAntFarm = New AntFarm(numAnts, numFood, PnlField.Width, PnlField.Height)
-        Dim x() As Single = mAntFarm.Ants(1).Brain.Weights
-        Dim y() As Single = mAntFarm.Ants(2).Brain.Weights
 
         If mFarmThread Is Nothing = False Then
             mFarmThread.Abort()
@@ -341,11 +314,11 @@ Public Class FrmFarm
 
     Private Sub TimerPaint_Tick(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles TimerPaint.Tick
         PnlField.Invalidate()
-        LblNumGen.Text = mAntFarm.Genome.Generations.ToString
-        LblTot.Text = mAntFarm.Genome.TotalFitness.ToString
-        LblAvg.Text = mAntFarm.Genome.AvgFitness.ToString
-        LblBest.Text = mAntFarm.Genome.BestFitness.ToString
-        LblCurBestScore.Text = mAntFarm.BestScore.ToString
+        'LblNumGen.Text = mAntFarm.Genome.Generations.ToString
+        'LblTot.Text = mAntFarm.Genome.TotalFitness.ToString
+        'LblAvg.Text = mAntFarm.Genome.AvgFitness.ToString
+        'LblBest.Text = mAntFarm.Genome.BestFitness.ToString
+        'LblCurBestScore.Text = mAntFarm.BestScore.ToString
     End Sub
 
     Private Sub ChkLock_CheckedChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ChkLock.CheckedChanged
@@ -371,5 +344,44 @@ Public Class FrmFarm
         If mAntFarm Is Nothing Then Exit Sub
         mAntFarm.Width = PnlField.Width
         mAntFarm.Height = PnlField.Height
+    End Sub
+End Class
+
+Public Class AntPainter
+    Implements AntsNeuralNet.Core.IAntPainter
+
+    Private mGraphics As System.Drawing.Graphics
+    Private mFoodPen As System.Drawing.Pen
+    Private mFoodRec As System.Drawing.Rectangle
+    Private mAntPen As System.Drawing.Pen
+    Private mUberAntPen As System.Drawing.Pen
+    Private mAntRec As System.Drawing.Rectangle
+
+    Public Sub New(graphics As System.Drawing.Graphics)
+        mGraphics = graphics
+        mFoodPen = New System.Drawing.Pen(Color.Yellow)
+        mFoodRec = New System.Drawing.Rectangle(1, 1, 5, 5)
+        mAntPen = New System.Drawing.Pen(Color.Red)
+        mUberAntPen = New System.Drawing.Pen(Color.Azure)
+        mAntRec = New System.Drawing.Rectangle(1, 1, 5, 5)
+    End Sub
+
+
+    Public Sub DrawAnt(p As PointF) Implements AntsNeuralNet.Core.IAntPainter.DrawAnt
+        mAntRec.X = p.X
+        mAntRec.Y = p.Y
+        mGraphics.DrawEllipse(mAntPen, mAntRec)
+    End Sub
+
+    Public Sub DrawFood(p As PointF) Implements AntsNeuralNet.Core.IAntPainter.DrawFood
+        mFoodRec.X = p.X
+        mFoodRec.Y = p.Y
+        mGraphics.DrawRectangle(mFoodPen, mFoodRec)
+    End Sub
+
+    Public Sub DrawUberAnt(p As PointF) Implements AntsNeuralNet.Core.IAntPainter.DrawUberAnt
+        mAntRec.X = p.X
+        mAntRec.Y = p.Y
+        mGraphics.DrawEllipse(mUberAntPen, mAntRec)
     End Sub
 End Class

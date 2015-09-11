@@ -1,5 +1,7 @@
 'Main storage class for the ant farm.  It runs in its own thread continually calling the update method. 
 'After mMaxticks the epoch is called in the genome class to start a new generation.
+Imports System.Collections.Generic
+
 Public Class AntFarm
     Implements AntsNeuralNet.Core.IAntFarm
 
@@ -105,12 +107,7 @@ Public Class AntFarm
             Return mAnts
         End Get
     End Property
-    Public ReadOnly Property Food() As PointF()
-        Get
-            Return mFood
-        End Get
-    End Property
-    Property FastRender() As Boolean
+    Property FastRender() As Boolean Implements AntsNeuralNet.Core.IAntFarm.FastRender
         Get
             Return mFastRender
         End Get
@@ -123,7 +120,7 @@ Public Class AntFarm
             Return mGenome
         End Get
     End Property
-    Public Property Width() As Integer
+    Public Property Width() As Integer Implements AntsNeuralNet.Core.IAntFarm.Width
         Get
             Return mWidth
         End Get
@@ -131,7 +128,7 @@ Public Class AntFarm
             mWidth = Value
         End Set
     End Property
-    Public Property Height() As Integer
+    Public Property Height() As Integer Implements AntsNeuralNet.Core.IAntFarm.Height
         Get
             Return mHeight
         End Get
@@ -139,14 +136,26 @@ Public Class AntFarm
             mHeight = Value
         End Set
     End Property
-    Public ReadOnly Property BestAnt() As Integer
+    Public ReadOnly Property BestAnt() As Integer Implements AntsNeuralNet.Core.IAntFarm.BestAnt
         Get
             Return mBestAnt
         End Get
     End Property
-    Public ReadOnly Property BestScore() As Integer
-        Get
-            Return mBestScore
-        End Get
-    End Property
+    Public Sub Draw(g As AntsNeuralNet.Core.IAntPainter) Implements AntsNeuralNet.Core.IAntFarm.Draw
+        Dim idx As Integer
+        Dim p As PointF
+        For idx = 0 To mAnts.Length - 1
+            p = mAnts(idx).Position
+            If mAnts(idx).Fitness = mBestScore And mBestScore <> 0 Then
+                g.DrawUberAnt(p)
+            Else
+                g.DrawAnt(p)
+            End If
+
+        Next
+        For idx = 0 To mFood.Length - 1
+            p = mFood(idx)
+            g.DrawFood(p)
+        Next
+    End Sub
 End Class
