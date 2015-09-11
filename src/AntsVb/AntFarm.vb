@@ -1,6 +1,7 @@
 'Main storage class for the ant farm.  It runs in its own thread continually calling the update method. 
 'After mMaxticks the epoch is called in the genome class to start a new generation.
 Public Class AntFarm
+    Implements AntsNeuralNet.Core.IAntFarm
 
     Private mAnts() As Ant
     Private mFood() As PointF
@@ -45,7 +46,7 @@ Public Class AntFarm
 
     End Sub
 
-    Public Sub Start()
+    Public Sub Start() Implements AntsNeuralNet.Core.IAntFarm.Start
         mShouldRun = True
         While (mShouldRun)
             Update()
@@ -56,12 +57,12 @@ Public Class AntFarm
         'Debug.WriteLine("Stopped AntFarm")
     End Sub
 
-    Public Sub Suspend()
+    Public Sub Suspend() Implements AntsNeuralNet.Core.IAntFarm.Suspend
         'Debug.WriteLine("Stopping AntFarm")
         mShouldRun = False
     End Sub
 
-    Public Sub Update()
+    Public Sub Update() Implements AntsNeuralNet.Core.IAntFarm.Update
         Dim idx As Integer
         If mNumTicks < mMaxTicks Then
             mBestAnt = -1

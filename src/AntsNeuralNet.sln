@@ -5,6 +5,8 @@ VisualStudioVersion = 12.0.30501.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AntsNeuralNet.Core", "AntsNeuralNet.Core\AntsNeuralNet.Core.csproj", "{1111C686-F5FC-4737-B17F-2F1BF4A60ECA}"
 EndProject
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "Ants", "AntsVb\Ants.vbproj", "{C80251C6-3338-4A0E-BBCD-DF795E4F2F34}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{1111C686-F5FC-4737-B17F-2F1BF4A60ECA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1111C686-F5FC-4737-B17F-2F1BF4A60ECA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1111C686-F5FC-4737-B17F-2F1BF4A60ECA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C80251C6-3338-4A0E-BBCD-DF795E4F2F34}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C80251C6-3338-4A0E-BBCD-DF795E4F2F34}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C80251C6-3338-4A0E-BBCD-DF795E4F2F34}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C80251C6-3338-4A0E-BBCD-DF795E4F2F34}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
